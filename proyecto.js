@@ -1,15 +1,6 @@
 // Lista de alumnos de ejemplo //
 
-const listaAlumnos = [
-  // {
-  //   nombre: "Ana Gómez",
-  //   notas: [67, 55, 42], // Un arreglo de números dentro del objeto
-  // },
-  // {
-  //   nombre: "Carlos Pérez",
-  //   notas: [60, 62, 58],
-  // },
-];
+const listaAlumnos = [];
 
 console.log("Prueba de lista de alumnos");
 console.log(listaAlumnos);
@@ -75,7 +66,21 @@ function agregarAlumno() {
   // Creamos el nuevo OBJETO alumno con los datos capturados
   let nuevoAlumno = {
     nombre: nombre.trim(),
-    notas: [nota1, nota2, nota3], // Dejamos las notas dentro de un arreglo.
+    notas: [nota1, nota2, nota3],
+
+    obtenerEstado: function (promedio) {
+      // Metodo de promedio y estado (aprobado / reprobado)
+      if (promedio >= 40) {
+        return "APROBADO";
+      } else {
+        return "REPROBADO";
+      }
+
+      // Dejamos las notas dentro de un arreglo.
+    },
+    actualizarNota: function (numNota, nuevaNota) {
+      this.notas[numNota - 1] = nuevaNota; // Restamos 1 porque los arreglos parten en 0
+    },
   };
 
   listaAlumnos.push(nuevoAlumno); // Guardamos en el arreglo global de alumnos.
@@ -109,7 +114,55 @@ function calcularPromedio(arregloNotas) {
 }
 
 //==========================================================================================
-// Función 3: Mostrar un reporte general en consola
+// Función 3: Actualizar notas de un alumno
+//==========================================================================================
+
+function modificarNotasAlumno() {
+  let nombreBuscar = prompt("¿A qué alumno deseas modificarle las notas?");
+  if (!nombreBuscar) return;
+
+  let alumnoEncontrado = null;
+  let nombreLimpio = nombreBuscar.trim().toLowerCase();
+
+  // Buscamos al alumno en la lista
+  listaAlumnos.forEach(function (alumno) {
+    if (alumno.nombre.toLowerCase() === nombreLimpio) {
+      alumnoEncontrado = alumno;
+    }
+  });
+
+  if (alumnoEncontrado) {
+    // Le mostramos sus notas actuales
+    alert(
+      "Alumno encontrado. Notas actuales: " +
+        alumnoEncontrado.notas.join(" - "),
+    );
+
+    let cualNota = Number(
+      prompt("¿Qué nota deseas modificar? (Escribe 1, 2 o 3):"),
+    );
+    if (cualNota >= 1 && cualNota <= 3) {
+      while (true) {
+        let nuevaNota = Number(prompt("Ingrese la nueva nota (10 - 70):"));
+        if (!isNaN(nuevaNota) && nuevaNota >= 10 && nuevaNota <= 70) {
+          // Ejecutamos el método del objeto para cambiar la nota
+          alumnoEncontrado.actualizarNota(cualNota, nuevaNota);
+
+          alert("¡Nota actualizada con éxito!\nNuevo promedio: ");
+          break;
+        }
+        alert("Nota inválida. Debe ser entre 10 y 70.");
+      }
+    } else {
+      alert("Número de nota incorrecto.");
+    }
+  } else {
+    alert("Alumno no encontrado.");
+  }
+}
+
+//==========================================================================================
+// Función 4: Mostrar un reporte general en consola
 //==========================================================================================
 
 function mostrarReporteGeneral() {
@@ -123,46 +176,49 @@ function mostrarReporteGeneral() {
     return;
   }
 
-  // Usamos un bucle para recorrer cada alumno del arreglo
-  for (let i = 0; i < listaAlumnos.length; i++) {
-    let alumno = listaAlumnos[i];
+  // Recorremos el arreglo con forEach
+  listaAlumnos.forEach(function (alumno) {
+    // 1. Usamos la función global para calcular el promedio
+    let prom = calcularPromedio(alumno.notas);
 
-    // REUTILIZACIÓN: Llamamos a la Función 2 para obtener su promedio
-    let promedio = calcularPromedio(alumno.notas);
+    // 2. Uso del metodo dejado previamente dentro de la función agregarAlumno
+    let estado = alumno.obtenerEstado(prom);
 
-    // Condiciones para APROBADO o REPROBADO
-    let estado = "";
-    if (promedio >= 40) {
-      estado = "APROBADO  (Promedio: " + promedio + ")";
-    } else {
-      estado = "REPROBADO (Promedio: " + promedio + ")";
-    }
-
-    // Imprimimos el resultado individual en la consola
-    console.log("Alumno: " + alumno.nombre + " -> Estado: " + estado);
-  }
+    // Imprimimos el resultado
+    console.log(
+      "Alumno: " +
+        alumno.nombre +
+        " | Promedio: " +
+        prom +
+        " | Estado: " +
+        estado,
+    );
+  });
 
   console.log("==================================");
-  alert("Reporte generado con éxito. Por favor, revisa la consola (F12).");
+  alert("Reporte generado. Revisa la consola.");
 }
 
 //======================================================================================
 //Ejecución del codigo
 //======================================================================================
 
+//======================================================================================
 // Bucle Principal y Menú Interactivo
+//======================================================================================
 
 let opcion = ""; // Variable para almacenar la decisión del usuario
 
 // El bucle 'while' se ejecutará MIENTRAS la opción no sea "4" (Salir)
-while (opcion !== "4") {
+while (opcion !== "5") {
   // Mostramos el menú y capturamos la entrada del usuario
   opcion = prompt(
     "--- PLATAFORMA DE APRENDIZAJE INTERACTIVA ---\n" +
-      "1. Registrar nuevo alumno\n" +
-      "2. Calcular promedio de un alumno\n" +
-      "3. Mostrar reporte general de aprobados\n" +
-      "4. Salir de la aplicación\n\n" +
+      "1. Registrar nuevo alumno y sus notas.\n" +
+      "2. Calcular promedio de notas de un alumno.\n" +
+      "3. Actualizar notas de un alumno.\n" +
+      "4. Mostrar reporte general de alumnos.\n" +
+      "5. Salir de la aplicación.\n\n" +
       "Por favor, ingrese el número de su opción:",
   );
 
@@ -173,9 +229,7 @@ while (opcion !== "4") {
       break;
 
     case "2": // Calcular promedio de un alumno.
-      // console.log("-> Has seleccionado: Calcular promedio.");
-      // alert("Opción 2 seleccionada (Ver consola)");
-      // 1. Usamos una variable NUEVA y exclusiva para la búsqueda
+      // Usamos una variable NUEVA y exclusiva para la búsqueda
       let nombreBuscar = prompt(
         "¿De qué alumno deseas calcular el promedio? (Ingresa nombre y apellido):",
       );
@@ -190,7 +244,7 @@ while (opcion !== "4") {
       // Almacenamos el texto limpio de espacios y en minúsculas
       let nombreLimpioBuscar = nombreBuscar.trim().toLowerCase();
 
-      // 2. Recorremos el arreglo
+      // Recorremos el arreglo
       for (let i = 0; i < listaAlumnos.length; i++) {
         // Limpiamos también el nombre de la base de datos por si acaso
         let nombreBaseDatos = listaAlumnos[i].nombre.trim().toLowerCase();
@@ -214,16 +268,21 @@ while (opcion !== "4") {
 
     case "3":
       alert("Opción 3 seleccionada (Ver consola)");
-      mostrarReporteGeneral();
+      modificarNotasAlumno();
       break;
 
     case "4":
+      alert("Opción 4 seleccionada (Ver consola)");
+      mostrarReporteGeneral();
+      break;
+
+    case "5":
       alert("Cerrando la aplicación. ¡Gracias por usar la plataforma!");
       break;
 
     case null:
       // Esto controla si el usuario presiona el botón "Cancelar" en el prompt
-      opcion = "4";
+      opcion = "5";
       alert("Aplicación cancelada.");
       break;
 
