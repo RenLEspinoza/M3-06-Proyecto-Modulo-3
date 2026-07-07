@@ -23,7 +23,44 @@ console.log(listaAlumnos);
 // ==========================================
 
 //==========================================================================================
-// Función 1: Calcular el promedio de un arreglo de notas
+// Función 1: Registrar nuevo alumno
+//==========================================================================================
+
+function agregarAlumno() {
+  let nombre = prompt("Ingrese el nombre completo del alumno:");
+
+  // Validación básica: Si cancela o deja el nombre vacío, salimos de la función
+  if (!nombre || nombre.trim() === "") {
+    alert("Registro cancelado. El nombre no puede estar vacío.");
+    return;
+  }
+
+  // Pedimos las 3 notas de forma individual
+  let nota1 = Number(prompt("Ingrese la nota 1 (10-70) para " + nombre + ":"));
+  let nota2 = Number(prompt("Ingrese la nota 2 (10-70) para " + nombre + ":"));
+  let nota3 = Number(prompt("Ingrese la nota 3 (10-70) para " + nombre + ":"));
+
+  // Validación técnica: Comprobamos si alguna nota no es un número válido (isNaN)
+  if (isNaN(nota1) || isNaN(nota2) || isNaN(nota3)) {
+    alert("Error: Las notas deben ser números válidos. Registro cancelado.");
+    return;
+  }
+
+  // Creamos el nuevo OBJETO alumno con los datos capturados
+  let nuevoAlumno = {
+    nombre: nombre,
+    notas: [nota1, nota2, nota3], // Dejamos las notas dentro de un arreglo.
+  };
+
+  // Agregamos el nuevo objeto (alumno) al ARREGLO principal del sistema
+  listaAlumnos.push(nuevoAlumno);
+
+  alert("¡" + nombre + " ha sido registrado con éxito!"); // Alerta de exito.
+  console.log("Nuevo alumno agregado a la lista:", nuevoAlumno);
+}
+
+//==========================================================================================
+// Función 2: Calcular el promedio de un arreglo de notas
 //==========================================================================================
 
 function calcularPromedio(arregloNotas) {
@@ -47,40 +84,41 @@ function calcularPromedio(arregloNotas) {
 }
 
 //==========================================================================================
-// Función 2: Registrar nuevo alumno
+// Función 3: Mostrar un reporte general en consola
 //==========================================================================================
 
-function agregarAlumno() {
-  let nombre = prompt("Ingrese el nombre completo del alumno:");
+function mostrarReporteGeneral() {
+  console.clear(); // Limpiamos la consola para que el reporte se vea ordenado
+  console.log("=== REPORTE GENERAL DE ALUMNOS ===");
 
-  // Validación básica: Si cancela o deja el nombre vacío, salimos de la función
-  if (!nombre || nombre.trim() === "") {
-    alert("Registro cancelado. El nombre no puede estar vacío.");
+  // Validamos si hay alumnos en la lista (En caso de que el usuario ejecute sin haber registrado alumnos)
+  if (listaAlumnos.length === 0) {
+    console.log("No hay alumnos registrados en el sistema.");
+    alert("No hay alumnos para mostrar.");
     return;
   }
 
-  // Pedimos las 3 notas de forma individual
-  let nota1 = Number(prompt("Ingrese la nota 1 (0-100) para " + nombre + ":"));
-  let nota2 = Number(prompt("Ingrese la nota 2 (0-100) para " + nombre + ":"));
-  let nota3 = Number(prompt("Ingrese la nota 3 (0-100) para " + nombre + ":"));
+  // Usamos un bucle para recorrer cada alumno del arreglo
+  for (let i = 0; i < listaAlumnos.length; i++) {
+    let alumno = listaAlumnos[i];
 
-  // Validación técnica: Comprobamos si alguna nota no es un número válido (isNaN)
-  if (isNaN(nota1) || isNaN(nota2) || isNaN(nota3)) {
-    alert("Error: Las notas deben ser números válidos. Registro cancelado.");
-    return;
+    // REUTILIZACIÓN: Llamamos a la Función 2 para obtener su promedio
+    let promedio = calcularPromedio(alumno.notas);
+
+    // Condiciones para APROBADO o REPROBADO
+    let estado = "";
+    if (promedio >= 40) {
+      estado = "APROBADO  (Promedio: " + promedio + ")";
+    } else {
+      estado = "REPROBADO (Promedio: " + promedio + ")";
+    }
+
+    // Imprimimos el resultado individual en la consola
+    console.log("Alumno: " + alumno.nombre + " -> Estado: " + estado);
   }
 
-  // Creamos el nuevo OBJETO alumno con los datos capturados
-  let nuevoAlumno = {
-    nombre: nombre,
-    notas: [nota1, nota2, nota3], // Dejamos las notas dentro de un arreglo.
-  };
-
-  // Agregamos el nuevo objeto (alumno) al ARREGLO principal del sistema
-  listaAlumnos.push(nuevoAlumno);
-
-  alert("¡" + nombre + " ha sido registrado con éxito!"); // Alerta de exito.
-  console.log("Nuevo alumno agregado a la lista:", nuevoAlumno);
+  console.log("==================================");
+  alert("Reporte generado con éxito. Por favor, revisa la consola (F12).");
 }
 
 //======================================================================================
@@ -116,26 +154,31 @@ while (opcion !== "4") {
     case "2": // Calcular promedio de un alumno.
       console.log("-> Has seleccionado: Calcular promedio.");
       alert("Opción 2 seleccionada (Ver consola)");
-      // Vamos a probar la función con el primer alumno de la lista (Ana Gómez, posición 0)
-      let alumnoPrueba = listaAlumnos[0];
+      let nombreBuscar = prompt("¿De qué alumno deseas calcular el promedio?");
+      let alumnoEncontrado = null;
 
-      // Llamamos a la función pasando sus notas como argumento
-      let resultadoPromedio = calcularPromedio(alumnoPrueba.notas);
+      // Buscamos al alumno en el arreglo
+      for (let i = 0; i < listaAlumnos.length; i++) {
+        if (
+          listaAlumnos[i].nombre.toLowerCase() === nombreBuscar.toLowerCase()
+        ) {
+          alumnoEncontrado = listaAlumnos[i];
+          break; // Si lo encuentra, rompe el bucle de búsqueda
+        }
+      }
 
-      // Mostramos el resultado
-      alert(
-        "El promedio de " + alumnoPrueba.nombre + " es: " + resultadoPromedio,
-      );
-      console.log(
-        "Promedio de " + alumnoPrueba.nombre + ": " + resultadoPromedio,
-      );
+      // Validamos si lo encontramos o no
+      if (alumnoEncontrado) {
+        let prom = calcularPromedio(alumnoEncontrado.notas);
+        alert("El promedio de " + alumnoEncontrado.nombre + " es: " + prom);
+      } else {
+        alert("Alumno no encontrado en el sistema.");
+      }
       break;
 
     case "3":
-      console.log(
-        "-> Has seleccionado: Mostrar reporte. (Aquí irá la función del Paso 3)",
-      );
       alert("Opción 3 seleccionada (Ver consola)");
+      mostrarReporteGeneral();
       break;
 
     case "4":
