@@ -1,18 +1,14 @@
 // Lista de alumnos de ejemplo //
 
 const listaAlumnos = [
-  //   {
-  //     nombre: "Ana Gómez",
-  //     notas: [67, 55, 42], // Un arreglo de números dentro del objeto
-  //   },
-  //   {
-  //     nombre: "Carlos Pérez",
-  //     notas: [60, 62, 58],
-  //   },
-  //   {
-  //     nombre: "María López",
-  //     notas: [45, 59, 65],
-  //   },
+  // {
+  //   nombre: "Ana Gómez",
+  //   notas: [67, 55, 42], // Un arreglo de números dentro del objeto
+  // },
+  // {
+  //   nombre: "Carlos Pérez",
+  //   notas: [60, 62, 58],
+  // },
 ];
 
 console.log("Prueba de lista de alumnos");
@@ -35,25 +31,54 @@ function agregarAlumno() {
     return;
   }
 
-  // Pedimos las 3 notas de forma individual
-  let nota1 = Number(prompt("Ingrese la nota 1 (10-70) para " + nombre + ":"));
-  let nota2 = Number(prompt("Ingrese la nota 2 (10-70) para " + nombre + ":"));
-  let nota3 = Number(prompt("Ingrese la nota 3 (10-70) para " + nombre + ":"));
+  // --- VALIDACIÓN NOTA 1 ---
+  while (true) {
+    nota1 = Number(
+      prompt("Ingrese la nota 1 (Rango 10 - 70) para " + nombre + ":"),
+    );
 
-  // Validación técnica: Comprobamos si alguna nota no es un número válido (isNaN)
-  if (isNaN(nota1) || isNaN(nota2) || isNaN(nota3)) {
-    alert("Error: Las notas deben ser números válidos. Registro cancelado.");
-    return;
+    // Verificamos si es un número válido Y si está dentro del rango
+    if (!isNaN(nota1) && nota1 >= 10 && nota1 <= 70) {
+      break; // ¡Nota perfecta! Rompemos el bucle 'while' y pasamos a la siguiente nota
+    }
+    // Si no cumple, el bucle no se rompe y muestra la alerta antes de repetirse
+    alert(
+      "Error: La nota 1 debe ser un número entre 10 y 70. Intente nuevamente.",
+    );
   }
 
+  // --- VALIDACIÓN NOTA 2 ---
+  while (true) {
+    nota2 = Number(
+      prompt("Ingrese la nota 2 (Rango 10 - 70) para " + nombre + ":"),
+    );
+    if (!isNaN(nota2) && nota2 >= 10 && nota2 <= 70) {
+      break;
+    }
+    alert(
+      "Error: La nota 2 debe ser un número entre 10 y 70. Intente nuevamente.",
+    );
+  }
+
+  // --- VALIDACIÓN NOTA 3 ---
+  while (true) {
+    nota3 = Number(
+      prompt("Ingrese la nota 3 (Rango 10 - 70) para " + nombre + ":"),
+    );
+    if (!isNaN(nota3) && nota3 >= 10 && nota3 <= 70) {
+      break;
+    }
+    alert(
+      "Error: La nota 3 debe ser un número entre 10 y 70. Intente nuevamente.",
+    );
+  }
   // Creamos el nuevo OBJETO alumno con los datos capturados
   let nuevoAlumno = {
-    nombre: nombre,
+    nombre: nombre.trim(),
     notas: [nota1, nota2, nota3], // Dejamos las notas dentro de un arreglo.
   };
 
-  // Agregamos el nuevo objeto (alumno) al ARREGLO principal del sistema
-  listaAlumnos.push(nuevoAlumno);
+  listaAlumnos.push(nuevoAlumno); // Guardamos en el arreglo global de alumnos.
 
   alert("¡" + nombre + " ha sido registrado con éxito!"); // Alerta de exito.
   console.log("Nuevo alumno agregado a la lista:", nuevoAlumno);
@@ -76,7 +101,7 @@ function calcularPromedio(arregloNotas) {
     suma += arregloNotas[i]; // Sumamos cada nota a nuestro acumulador
   }
 
-  // Calculamr el promedio dividiendo la suma total entre el número de notas
+  // Calcular el promedio dividiendo la suma total entre el número de notas
   let promedio = suma / arregloNotas.length;
 
   // Retornar el promedio redondeado a un decimal para que se vea limpio
@@ -143,36 +168,47 @@ while (opcion !== "4") {
 
   // Evaluamos la opción ingresada usando 'switch'
   switch (opcion) {
-    case "1": // Registrar nuevo alumno.
-      //   console.log(
-      //     "-> Has seleccionado: Registrar nuevo alumno. (Aquí irá la función del Paso 3)",
-      //   );
-      //   alert("Opción 1 seleccionada (Ver consola)");
+    case "1":
       agregarAlumno();
       break;
 
     case "2": // Calcular promedio de un alumno.
-      console.log("-> Has seleccionado: Calcular promedio.");
-      alert("Opción 2 seleccionada (Ver consola)");
-      let nombreBuscar = prompt("¿De qué alumno deseas calcular el promedio?");
-      let alumnoEncontrado = null;
+      // console.log("-> Has seleccionado: Calcular promedio.");
+      // alert("Opción 2 seleccionada (Ver consola)");
+      // 1. Usamos una variable NUEVA y exclusiva para la búsqueda
+      let nombreBuscar = prompt(
+        "¿De qué alumno deseas calcular el promedio? (Ingresa nombre y apellido):",
+      );
 
-      // Buscamos al alumno en el arreglo
+      // Validamos que no haya cancelado
+      if (!nombreBuscar || nombreBuscar.trim() === "") {
+        alert("Búsqueda cancelada.");
+        break;
+      }
+
+      let alumnoEncontrado = null;
+      // Almacenamos el texto limpio de espacios y en minúsculas
+      let nombreLimpioBuscar = nombreBuscar.trim().toLowerCase();
+
+      // 2. Recorremos el arreglo
       for (let i = 0; i < listaAlumnos.length; i++) {
-        if (
-          listaAlumnos[i].nombre.toLowerCase() === nombreBuscar.toLowerCase()
-        ) {
+        // Limpiamos también el nombre de la base de datos por si acaso
+        let nombreBaseDatos = listaAlumnos[i].nombre.trim().toLowerCase();
+
+        if (nombreBaseDatos === nombreLimpioBuscar) {
           alumnoEncontrado = listaAlumnos[i];
-          break; // Si lo encuentra, rompe el bucle de búsqueda
+          break;
         }
       }
 
-      // Validamos si lo encontramos o no
+      // 3. Mostramos el resultado
       if (alumnoEncontrado) {
         let prom = calcularPromedio(alumnoEncontrado.notas);
         alert("El promedio de " + alumnoEncontrado.nombre + " es: " + prom);
       } else {
-        alert("Alumno no encontrado en el sistema.");
+        alert(
+          "Alumno no encontrado. Asegúrate de escribir nombre y apellido exactamente igual (ej: Ana Gómez).",
+        );
       }
       break;
 
