@@ -145,7 +145,7 @@ function modificarNotasAlumno() {
           // Ejecutamos el método del objeto para cambiar la nota
           alumnoEncontrado.actualizarNota(cualNota, nuevaNota);
 
-          alert("¡Nota actualizada con éxito!\nNuevo promedio: ");
+          alert("¡Nota actualizada con éxito!");
           break;
         }
         alert("Nota inválida. Debe ser entre 10 y 70.");
@@ -183,8 +183,12 @@ function mostrarReporteGeneral() {
 
     // Imprimimos el resultado
     console.log(
-      "Alumno: " + alumno.nombre + -iddde43e <
-        " | Promedio: " + prom + " | Estado: " + estado,
+      "Alumno: " +
+        alumno.nombre +
+        " | Promedio: " +
+        prom +
+        " | Estado: " +
+        estado,
     );
   });
 
@@ -260,12 +264,10 @@ while (opcion !== "5") {
       break;
 
     case "3":
-      alert("Opción 3 seleccionada (Ver consola)");
       modificarNotasAlumno();
       break;
 
     case "4":
-      alert("Opción 4 seleccionada (Ver consola)");
       mostrarReporteGeneral();
       break;
 
