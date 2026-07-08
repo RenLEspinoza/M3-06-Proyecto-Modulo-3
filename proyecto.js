@@ -1,9 +1,6 @@
-// Lista de alumnos de ejemplo //
+// Lista de alumnos //
 
 const listaAlumnos = [];
-
-console.log("Prueba de lista de alumnos");
-console.log(listaAlumnos);
 
 // ==========================================
 // FUNCIONES DE OPERACIONES
@@ -186,12 +183,8 @@ function mostrarReporteGeneral() {
 
     // Imprimimos el resultado
     console.log(
-      "Alumno: " +
-        alumno.nombre +
-        " | Promedio: " +
-        prom +
-        " | Estado: " +
-        estado,
+      "Alumno: " + alumno.nombre + -iddde43e <
+        " | Promedio: " + prom + " | Estado: " + estado,
     );
   });
 
@@ -209,7 +202,7 @@ function mostrarReporteGeneral() {
 
 let opcion = ""; // Variable para almacenar la decisión del usuario
 
-// El bucle 'while' se ejecutará MIENTRAS la opción no sea "4" (Salir)
+// El bucle 'while' se ejecutará MIENTRAS la opción no sea "5" (Salir)
 while (opcion !== "5") {
   // Mostramos el menú y capturamos la entrada del usuario
   opcion = prompt(
@@ -222,26 +215,26 @@ while (opcion !== "5") {
       "Por favor, ingrese el número de su opción:",
   );
 
-  // Evaluamos la opción ingresada usando 'switch'
+  // Evaluamos la opción ingresada usando 'switch'.
   switch (opcion) {
     case "1":
       agregarAlumno();
       break;
 
     case "2": // Calcular promedio de un alumno.
-      // Usamos una variable NUEVA y exclusiva para la búsqueda
+      // Usamos una variable nueva y exclusiva para la búsqueda
       let nombreBuscar = prompt(
         "¿De qué alumno deseas calcular el promedio? (Ingresa nombre y apellido):",
       );
 
-      // Validamos que no haya cancelado
+      // Validamos que el usuario ingrese un nombre a buscar o se cancela.
       if (!nombreBuscar || nombreBuscar.trim() === "") {
         alert("Búsqueda cancelada.");
         break;
       }
 
       let alumnoEncontrado = null;
-      // Almacenamos el texto limpio de espacios y en minúsculas
+      // Almacenamos el texto limpio de espacios y en minúsculas.
       let nombreLimpioBuscar = nombreBuscar.trim().toLowerCase();
 
       // Recorremos el arreglo
